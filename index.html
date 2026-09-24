@@ -194,6 +194,28 @@
             color: #6c757d;
             margin-top: auto;
         }
+        .btn-install {
+            position: fixed; bottom: 18px; right: 18px; z-index: 999;
+            display: none; align-items: center; gap: 8px;
+            background: var(--primary-color); color: #fff; border: none;
+            padding: 12px 18px; border-radius: 30px; font-size: 15px; font-weight: 600;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25); cursor: pointer;
+        }
+        .btn-install:hover { background: var(--primary-hover); }
+        .modal-fons {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-caixa {
+            background: #fff; border-radius: 12px; padding: 22px;
+            max-width: 340px; width: 90%; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        .modal-caixa h3 { color: var(--primary-color); margin-bottom: 10px; font-size: 17px; }
+        .modal-caixa p { font-size: 14px; line-height: 1.5; margin-bottom: 10px; }
+        .modal-tancar {
+            background: var(--primary-color); color: #fff; border: none;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -227,6 +249,17 @@
                 <button id="micBtn" class="btn-action btn-mic" onclick="alternarMicrofon()" title="Gravar per veu">🎤</button>
                 <button id="sendBtn" class="btn-action" onclick="enviarMissatge()">Enviar</button>
             </div>
+        </div>
+    </div>
+
+    <button id="installBtn" class="btn-install">📲 <span id="installBtnTxt">Instal·lar app</span></button>
+
+    <div id="modalFons" class="modal-fons" onclick="if(event.target===this)tancarModal()">
+        <div class="modal-caixa">
+            <h3 id="installTitle"></h3>
+            <p id="iosInstr"></p>
+            <p id="androidInstr"></p>
+            <button class="modal-tancar" id="closeBtn" onclick="tancarModal()">D'acord</button>
         </div>
     </div>
 
@@ -447,6 +480,7 @@
         document.getElementById('userInput').style.direction = data.dir;
 
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        if (typeof actualitzarInstallTexts === 'function') actualitzarInstallTexts();
         if (event && event.target) {
             event.target.classList.add('active');
         }
@@ -576,6 +610,104 @@
             navigator.serviceWorker.register("sw.js").catch((e) => console.error("SW:", e));
         });
     }
+</script>
+
+<script>
+    // ─── BOTÓN "INSTAL·LAR APP" (PWA) ─────────────────────────────────
+    let deferredPrompt = null;
+    const installTexts = {
+        ca: { btn: "Instal·lar app", title: "Instal·la l'app al teu mòbil",
+              ios: "iPhone/iPad (Safari): toca el botó Compartir i després «Añadir a pantalla de inicio».",
+              android: "Android (Chrome): toca el menú ⋮ i després «Instalar aplicación» o «Añadir a pantalla de inicio».",
+              close: "D'acord" },
+        es: { btn: "Instalar app", title: "Instala la app en tu móvil",
+              ios: "iPhone/iPad (Safari): toca el botón Compartir y después «Añadir a pantalla de inicio».",
+              android: "Android (Chrome): toca el menú ⋮ y después «Instalar aplicación» o «Añadir a pantalla de inicio».",
+              close: "De acuerdo" },
+        en: { btn: "Install app", title: "Install the app on your phone",
+              ios: "iPhone/iPad (Safari): tap the Share button, then \"Add to Home Screen\".",
+              android: "Android (Chrome): tap the ⋮ menu, then \"Install app\" or \"Add to Home screen\".",
+              close: "OK" },
+        fr: { btn: "Installer l'app", title: "Installez l'app sur votre mobile",
+              ios: "iPhone/iPad (Safari) : touchez le bouton Partager, puis « Ajouter à l'écran d'accueil ».",
+              android: "Android (Chrome) : touchez le menu ⋮, puis « Installer l'application ».",
+              close: "D'accord" },
+        pt: { btn: "Instalar app", title: "Instale a app no seu telemóvel",
+              ios: "iPhone/iPad (Safari): toque no botão Partilhar e depois \"Adicionar ao ecrã inicial\".",
+              android: "Android (Chrome): toque no menu ⋮ e depois \"Instalar aplicação\".",
+              close: "OK" },
+        it: { btn: "Installa app", title: "Installa l'app sul tuo telefono",
+              ios: "iPhone/iPad (Safari): tocca il pulsante Condividi, poi \"Aggiungi a Home\".",
+              android: "Android (Chrome): tocca il menu ⋮, poi \"Installa app\".",
+              close: "OK" },
+        ro: { btn: "Instalează aplicația", title: "Instalează aplicația pe telefon",
+              ios: "iPhone/iPad (Safari): atinge butonul Partajează, apoi \"Adaugă la ecranul de pornire\".",
+              android: "Android (Chrome): atinge meniul ⋮, apoi \"Instalează aplicația\".",
+              close: "OK" },
+        ar: { btn: "تثبيت التطبيق", title: "ثبّت التطبيق على هاتفك",
+              ios: "آيفون/آيباد (سفاري): اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية».",
+              android: "أندرويد (كروم): اضغط قائمة ⋮ ثم «تثبيت التطبيق».",
+              close: "حسناً" },
+        ber: { btn: "Sebded asnas", title: "Sebded asnas ɣer tilifun-inek",
+              ios: "iPhone/iPad (Safari): sit tiqeffalt Bḍu, sya \"Rnu ɣer ugdud n wudem\".",
+              android: "Android (Chrome): sit umuṛ ⋮, sya \"Sebded asnas\".",
+              close: "Ih" },
+        uk: { btn: "Встановити застосунок", title: "Встановіть застосунок на телефон",
+              ios: "iPhone/iPad (Safari): натисніть «Поділитися», потім «Додати на початковий екран».",
+              android: "Android (Chrome): натисніть меню ⋮, потім «Встановити застосунок».",
+              close: "Гаразд" },
+        ru: { btn: "Установить приложение", title: "Установите приложение на телефон",
+              ios: "iPhone/iPad (Safari): нажмите «Поделиться», затем «На экран Домой».",
+              android: "Android (Chrome): нажмите меню ⋮, затем «Установить приложение».",
+              close: "Хорошо" },
+        zh: { btn: "安装应用", title: "在手机上安装本应用",
+              ios: "iPhone/iPad（Safari）：点按“分享”按钮，然后选择“添加到主屏幕”。",
+              android: "安卓（Chrome）：点按 ⋮ 菜单，然后选择“安装应用”。",
+              close: "好的" }
+    };
+
+    function installLang() { return installTexts[currentLang] || installTexts.ca; }
+
+    function actualitzarInstallTexts() {
+        const t = installLang();
+        document.getElementById('installBtnTxt').innerText = t.btn;
+        document.getElementById('installTitle').innerText = t.title;
+        document.getElementById('iosInstr').innerText = t.ios;
+        document.getElementById('androidInstr').innerText = t.android;
+        document.getElementById('closeBtn').innerText = t.close;
+    }
+
+    function tancarModal() { document.getElementById('modalFons').style.display = 'none'; }
+
+    (function () {
+        const installBtn = document.getElementById('installBtn');
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        // En móviles mostramos el botón siempre (iOS no dispara beforeinstallprompt)
+        if (isMobile && !isStandalone) {
+            actualitzarInstallTexts();
+            installBtn.style.display = 'flex';
+        }
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const choice = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                if (choice.outcome === 'accepted') installBtn.style.display = 'none';
+            } else {
+                actualitzarInstallTexts();
+                document.getElementById('modalFons').style.display = 'flex';
+            }
+        });
+    })();
 </script>
 
 </body>
