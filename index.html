@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informador d'IA - COEES</title>
+    <title>Informador d'IA - COEESCV</title>
     <style>
         :root {
             --primary-color: #E87722;
@@ -206,8 +206,8 @@
     </div>
 
     <div class="container">
-        <img src="imagen_logo.jpg" alt="COEES - Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana" class="header-logo">
-        <div id="header-title" class="header-title">Informador d'Intel·ligència Artificial - COEES</div>
+        <img src="imagen_logo.jpg" alt="COEESCV - Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana" class="header-logo">
+        <div id="header-title" class="header-title">Informador d'Intel·ligència Artificial - COEESCV</div>
         <div id="header-desc" class="header-desc">Consulta qualsevol dubte o informació actualitzada sobre el Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana.</div>
 
         <div id="chat-container" style="direction: ltr;">
@@ -223,13 +223,13 @@
     </div>
 
     <footer>
-        © COEES - Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana
+        © COEESCV - Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana
     </footer>
 
 <script>
     // ─── URL DEL WORKER DE CLOUDFLARE (AGENTE IA) ──────────────────────
     // ⚠️ SUSTITUIR por la URL real de tu Worker una vez desplegado.
-    const WORKER_URL = "https://TU-WORKER-AQUI.TU-USUARIO.workers.dev";
+    const WORKER_URL = "https://coeescv.insightethos.workers.dev";
 
     let currentLang = 'ca';
     let estatProcessant = false;
@@ -239,7 +239,7 @@
 
     const translations = {
         ca: {
-            title: "Informador d'Intel·ligència Artificial - COEES",
+            title: "Informador d'Intel·ligència Artificial - COEESCV",
             desc: "Consulta qualsevol dubte o informació actualitzada sobre el Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana.",
             welcome: "Hola! Sóc l'informador virtual del Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana. En què et puc ajudar?",
             placeholder: "Escriu la teua consulta...",
@@ -253,7 +253,7 @@
             ]
         },
         es: {
-            title: "Informador de Inteligencia Artificial - COEES",
+            title: "Informador de Inteligencia Artificial - COEESCV",
             desc: "Consulta cualquier duda o información actualizada sobre el Colegio Profesional de Educadoras y Educadores Sociales de la Comunidad Valenciana.",
             welcome: "¡Hola! Soy el informador virtual del Colegio Profesional de Educadoras y Educadores Sociales de la Comunidad Valenciana. ¿En qué puedo ayudarte?",
             placeholder: "Escribe tu consulta...",
@@ -267,7 +267,7 @@
             ]
         },
         en: {
-            title: "Artificial Intelligence Informer - COEES",
+            title: "Artificial Intelligence Informer - COEESCV",
             desc: "Ask any question or get updated information about the Official College of Social Educators of the Valencian Community.",
             welcome: "Hello! I am the virtual informer of the Official College of Social Educators of the Valencian Community. How can I help you?",
             placeholder: "Type your query...",
@@ -281,7 +281,7 @@
             ]
         },
         fr: {
-            title: "Informateur d'Intelligence Artificielle - COEES",
+            title: "Informateur d'Intelligence Artificielle - COEESCV",
             desc: "Posez toutes vos questions ou obtenez des informations mises à jour sur le Collège Officiel des Éducateurs Sociaux de la Communauté valencienne.",
             welcome: "Bonjour ! Je suis l'informateur virtuel du Collège Officiel des Éducateurs Sociaux de la Communauté valencienne. Comment puis-je vous aider ?",
             placeholder: "Écrivez votre question...",
@@ -295,7 +295,7 @@
             ]
         },
         pt: {
-            title: "Informador de Inteligência Artificial - COEES",
+            title: "Informador de Inteligência Artificial - COEESCV",
             desc: "Consulte qualquer dúvida ou informação atualizada sobre o Colégio Oficial de Educadores Sociais da Comunidade Valenciana.",
             welcome: "Olá! Sou o informador virtual do Colégio Oficial de Educadores Sociais da Comunidade Valenciana. Em que posso ajudar?",
             placeholder: "Escreva a sua consulta...",
@@ -309,7 +309,7 @@
             ]
         },
         it: {
-            title: "Informatore di Intelligenza Artificiale - COEES",
+            title: "Informatore di Intelligenza Artificiale - COEESCV",
             desc: "Consulta qualsiasi dubbio o informazione aggiornata sul Collegio Ufficiale degli Educatori Sociali della Comunità Valenciana.",
             welcome: "Ciao! Sono l'informatore virtuale del Collegio Ufficiale degli Educatori Sociali della Comunità Valenciana. Come posso aiutarti?",
             placeholder: "Scrivi la tua richiesta...",
@@ -323,7 +323,7 @@
             ]
         },
         ro: {
-            title: "Informator de Inteligență Artificială - COEES",
+            title: "Informator de Inteligență Artificială - COEESCV",
             desc: "Consultați orice întrebare sau informație actualizată despre Colegiul Oficial al Educatorilor Sociali din Comunitatea Valenciană.",
             welcome: "Bună! Sunt informatorul virtual al Colegiului Oficial al Educatorilor Sociali din Comunitatea Valenciană. Cu ce vă pot ajuta?",
             placeholder: "Scrieți întrebarea...",
@@ -337,7 +337,7 @@
             ]
         },
         ar: {
-            title: "مرشد الذكاء الاصطناعي - COEES",
+            title: "مرشد الذكاء الاصطناعي - COEESCV",
             desc: "استفسر عن أي سؤال أو معلومات محدثة حول الكلية الرسمية للمربين الاجتماعيين في مجتمع فالنسيا.",
             welcome: "مرحبًا! أنا المرشد الافتراضي للكلية الرسمية للمربين الاجتماعيين في مجتمع فالنسيا. كيف يمكنني مساعدتك؟",
             placeholder: "اكتب استفسارك...",
@@ -351,7 +351,7 @@
             ]
         },
         ber: {
-            title: "Amsissi n Tussna Tanagant - COEES",
+            title: "Amsissi n Tussna Tanagant - COEESCV",
             desc: "Sesten ɣef yal asteqsi neɣ talɣut tatrart ɣef Usensu Aẓerfan n Yimsiggezen Inaẓuren n Temnaḍt Valenciana.",
             welcome: "Azul! Nek d amsissi awurman n Usensu Aẓerfan n Yimsiggezen Inaẓuren n Temnaḍt Valenciana. Amek i zemreɣ ad k-alleɣ?",
             placeholder: "Aru asteqsi-inek...",
@@ -365,7 +365,7 @@
             ]
         },
         uk: {
-            title: "Інформатор штучного інтелекту - COEES",
+            title: "Інформатор штучного інтелекту - COEESCV",
             desc: "Задайте будь-яке питання або отримайте актуальну інформацію про Офіційну колегію соціальних педагогів Валенсійської спільноти.",
             welcome: "Вітаю! Я віртуальний інформатор Офіційної колегії соціальних педагогів Валенсійської спільноти. Чим можу допомогти?",
             placeholder: "Напишіть своє запитання...",
@@ -379,7 +379,7 @@
             ]
         },
         ru: {
-            title: "Информатор искусственного интеллекта - COEES",
+            title: "Информатор искусственного интеллекта - COEESCV",
             desc: "Задайте любой вопрос или получите актуальную информацию об Официальной коллегии социальных педагогов Валенсийского сообщества.",
             welcome: "Здравствуйте! Я виртуальный информатор Официальной коллегии социальных педагогов Валенсийского сообщества. Чем могу помочь?",
             placeholder: "Напишите ваш запрос...",
@@ -393,7 +393,7 @@
             ]
         },
         zh: {
-            title: "人工智能信息员 - COEES",
+            title: "人工智能信息员 - COEESCV",
             desc: "咨询关于巴伦西亚社区社会教育工作者官方学院的任何疑问或最新信息。",
             welcome: "你好！我是巴伦西亚社区社会教育工作者官方学院的虚拟信息员。有什么可以帮您的？",
             placeholder: "输入您的疑问...",
