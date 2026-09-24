@@ -1,0 +1,17 @@
+{
+  "name": "Informador IA - COEESCV",
+  "short_name": "COEESCV IA",
+  "description": "Informador virtual del Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8f9fa",
+  "theme_color": "#E87722",
+  "lang": "ca",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
