@@ -1,9 +1,10 @@
-// Service Worker del Informador IA - COEESCV
+// Service Worker del Informador IA - COEESCV (v2)
 // Estrategia: caché primero para los archivos estáticos propios.
+// Cada recurso se cachea por separado: si uno falla, el resto sigue funcionando.
 // IMPORTANTE: nunca intercepta la llamada al Worker (cross-origin),
 // así las respuestas de la IA siempre son en directo.
 
-const CACHE = "coeescv-ia-v1";
+const CACHE = "coeescv-ia-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -17,7 +18,9 @@ const ASSETS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE).then((cache) =>
+      Promise.allSettled(ASSETS.map((asset) => cache.add(asset)))
+    )
   );
   self.skipWaiting();
 });
