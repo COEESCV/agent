@@ -4,6 +4,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informador d'IA - COEESCV</title>
+    <!-- ─── PWA: instalación en el móvil ─── -->
+    <meta name="theme-color" content="#E87722">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="COEESCV IA">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         :root {
             --primary-color: #E87722;
@@ -148,7 +156,7 @@
             cursor: not-allowed;
         }
         .btn-action {
-            background: var(--primary-color);
+            background-color: var(--primary-color);
             color: white;
             border: none;
             padding: 10px 16px;
@@ -541,7 +549,7 @@
                 body: JSON.stringify({ pregunta: missatge, lang: currentLang })
             });
             const data = await response.json();
-            const respostaBot = data.resposta || data.reply || "No s'ha obtingut cap resposta del sistema.";
+            const respostaBot = data.resposta || data.reply || data.error || "No s'ha obtingut cap resposta del sistema.";
 
             clearInterval(intervalRotacio);
             document.getElementById(loadingId).remove();
@@ -559,6 +567,15 @@
 
     // ─── INICIALITZAR AL CARREGAR LA PÀGINA ─────────────────────────────
     window.onload = detectarLangURL;
+</script>
+
+<!-- ─── PWA: registro del service worker ─── -->
+<script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("sw.js").catch((e) => console.error("SW:", e));
+        });
+    }
 </script>
 
 </body>
