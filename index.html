@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ca-valencia">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informador d'IA - COEES</title>
+    <style>
+        :root {
+            --primary-color: #E87722;
+            --primary-hover: #C75F12;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --border-color: #e9ecef;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Imagen de fondo de la organización, con velo blanco para legibilidad */
+            background:
+                linear-gradient(rgba(248, 249, 250, 0.92), rgba(248, 249, 250, 0.92)),
+                url("imagen_fondo.jpg") repeat;
+        }
+        .lang-bar {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .lang-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+        .lang-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 20px auto;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            padding: 25px;
+            text-align: center;
+        }
+        .header-logo {
+            display: block;
+            margin: 0 auto 15px auto;
+            max-height: 120px;
+            object-fit: contain;
+        }
+        .header-title {
+            color: var(--primary-color);
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .header-desc {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 480px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: left;
+        }
+        #chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .message {
+            padding: 10px 14px;
+            border-radius: 8px;
+            max-width: 80%;
+            line-height: 1.4;
+            font-size: 14px;
+        }
+        .message.user {
+            background: var(--primary-color);
+            color: #fff;
+            align-self: flex-end;
+        }
+        .message.bot {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+            color: var(--text-color);
+        }
+        .message.loading {
+            font-style: italic;
+            color: #444;
+            background: #f0f4f8;
+            border: 1px dashed var(--primary-color);
+            align-self: flex-start;
+            transition: all 0.3s ease;
+        }
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            background: #fff;
+            border-top: 1px solid var(--border-color);
+            gap: 8px;
+            align-items: center;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            font-size: 14px;
+        }
+        .chat-input-area input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(232, 119, 34, 0.15);
+        }
+        .chat-input-area input:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        .btn-action {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+        .btn-action:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+        .btn-action:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-mic.recording {
+            background: #d9534f;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            padding: 18px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-bar">
+        <button class="lang-btn" onclick="changeLang('ca', event)">valencià/català</button>
+        <button class="lang-btn" onclick="changeLang('es', event)">castellano</button>
+        <button class="lang-btn" onclick="changeLang('en', event)">english</button>
+        <button class="lang-btn" onclick="changeLang('fr', event)">francés</button>
+        <button class="lang-btn" onclick="changeLang('pt', event)">português</button>
+        <button class="lang-btn" onclick="changeLang('it', event)">italiano</button>
+        <button class="lang-btn" onclick="changeLang('ro', event)">română</button>
+        <button class="lang-btn" onclick="changeLang('ar', event)">العربية</button>
+        <button class="lang-btn" onclick="changeLang('ber', event)">tamazight</button>
+        <button class="lang-btn" onclick="changeLang('uk', event)">українська</button>
+        <button class="lang-btn" onclick="changeLang('ru', event)">русский</button>
+        <button class="lang-btn" onclick="changeLang('zh', event)">中文</button>
+    </div>
+
+    <div class="container">
+        <img src="imagen_logo.jpg" alt="COEES - Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana" class="header-logo">
+        <div id="header-title" class="header-title">Informador d'Intel·ligència Artificial - COEES</div>
+        <div id="header-desc" class="header-desc">Consulta qualsevol dubte o informació actualitzada sobre el Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana.</div>
+
+        <div id="chat-container" style="direction: ltr;">
+            <div id="chat-messages">
+                <div id="welcome-msg" class="message bot">Hola! Sóc l'informador virtual del Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana. En què et puc ajudar?</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="Escriu la teua consulta..." onkeypress="if(event.key === 'Enter') enviarMissatge()" style="direction: ltr;">
+                <button id="micBtn" class="btn-action btn-mic" onclick="alternarMicrofon()" title="Gravar per veu">🎤</button>
+                <button id="sendBtn" class="btn-action" onclick="enviarMissatge()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © COEES - Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana
+    </footer>
+
+<script>
+    // ─── URL DEL WORKER DE CLOUDFLARE (AGENTE IA) ──────────────────────
+    // ⚠️ SUSTITUIR por la URL real de tu Worker una vez desplegado.
+    const WORKER_URL = "https://TU-WORKER-AQUI.TU-USUARIO.workers.dev";
+
+    let currentLang = 'ca';
+    let estatProcessant = false;
+    let reconeixementVeu = null;
+    let gravant = false;
+    let intervalRotacio = null;
+
+    const translations = {
+        ca: {
+            title: "Informador d'Intel·ligència Artificial - COEES",
+            desc: "Consulta qualsevol dubte o informació actualitzada sobre el Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana.",
+            welcome: "Hola! Sóc l'informador virtual del Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana. En què et puc ajudar?",
+            placeholder: "Escriu la teua consulta...",
+            sendBtn: "Enviar",
+            dir: "ltr",
+            waitingMsgs: [
+                "Espereu, l'informador està consultant la documentació...",
+                "Ja quasi tenim una resposta...",
+                "Analitzant la informació del col·legi...",
+                "S'està preparant la resposta sol·licitada..."
+            ]
+        },
+        es: {
+            title: "Informador de Inteligencia Artificial - COEES",
+            desc: "Consulta cualquier duda o información actualizada sobre el Colegio Profesional de Educadoras y Educadores Sociales de la Comunidad Valenciana.",
+            welcome: "¡Hola! Soy el informador virtual del Colegio Profesional de Educadoras y Educadores Sociales de la Comunidad Valenciana. ¿En qué puedo ayudarte?",
+            placeholder: "Escribe tu consulta...",
+            sendBtn: "Enviar",
+            dir: "ltr",
+            waitingMsgs: [
+                "Espere, el informador está consultando la documentación...",
+                "Ya casi tenemos una respuesta...",
+                "Analizando la información del colegio...",
+                "Se está preparando la respuesta solicitada..."
+            ]
+        },
+        en: {
+            title: "Artificial Intelligence Informer - COEES",
+            desc: "Ask any question or get updated information about the Official College of Social Educators of the Valencian Community.",
+            welcome: "Hello! I am the virtual informer of the Official College of Social Educators of the Valencian Community. How can I help you?",
+            placeholder: "Type your query...",
+            sendBtn: "Send",
+            dir: "ltr",
+            waitingMsgs: [
+                "Please wait, the informer is checking the documentation...",
+                "We almost have an answer...",
+                "Analyzing college information...",
+                "Preparing the requested answer..."
+            ]
+        },
+        fr: {
+            title: "Informateur d'Intelligence Artificielle - COEES",
+            desc: "Posez toutes vos questions ou obtenez des informations mises à jour sur le Collège Officiel des Éducateurs Sociaux de la Communauté valencienne.",
+            welcome: "Bonjour ! Je suis l'informateur virtuel du Collège Officiel des Éducateurs Sociaux de la Communauté valencienne. Comment puis-je vous aider ?",
+            placeholder: "Écrivez votre question...",
+            sendBtn: "Envoyer",
+            dir: "ltr",
+            waitingMsgs: [
+                "Veuillez patienter, l'informateur consulte la documentation...",
+                "Nous avons presque une réponse...",
+                "Analyse des informations du collège...",
+                "Préparation de la réponse demandée..."
+            ]
+        },
+        pt: {
+            title: "Informador de Inteligência Artificial - COEES",
+            desc: "Consulte qualquer dúvida ou informação atualizada sobre o Colégio Oficial de Educadores Sociais da Comunidade Valenciana.",
+            welcome: "Olá! Sou o informador virtual do Colégio Oficial de Educadores Sociais da Comunidade Valenciana. Em que posso ajudar?",
+            placeholder: "Escreva a sua consulta...",
+            sendBtn: "Enviar",
+            dir: "ltr",
+            waitingMsgs: [
+                "Aguarde, o informador está a consultar a documentação...",
+                "Já quase temos uma resposta...",
+                "A analisar a informação do colégio...",
+                "A preparar a resposta solicitada..."
+            ]
+        },
+        it: {
+            title: "Informatore di Intelligenza Artificiale - COEES",
+            desc: "Consulta qualsiasi dubbio o informazione aggiornata sul Collegio Ufficiale degli Educatori Sociali della Comunità Valenciana.",
+            welcome: "Ciao! Sono l'informatore virtuale del Collegio Ufficiale degli Educatori Sociali della Comunità Valenciana. Come posso aiutarti?",
+            placeholder: "Scrivi la tua richiesta...",
+            sendBtn: "Invia",
+            dir: "ltr",
+            waitingMsgs: [
+                "Attendi, l'informatore sta consultando la documentazione...",
+                "Abbiamo quasi una risposta...",
+                "Analisi delle informazioni del collegio...",
+                "Preparazione della risposta richiesta..."
+            ]
+        },
+        ro: {
+            title: "Informator de Inteligență Artificială - COEES",
+            desc: "Consultați orice întrebare sau informație actualizată despre Colegiul Oficial al Educatorilor Sociali din Comunitatea Valenciană.",
+            welcome: "Bună! Sunt informatorul virtual al Colegiului Oficial al Educatorilor Sociali din Comunitatea Valenciană. Cu ce vă pot ajuta?",
+            placeholder: "Scrieți întrebarea...",
+            sendBtn: "Trimite",
+            dir: "ltr",
+            waitingMsgs: [
+                "Așteptați, informatorul consultă documentația...",
+                "Aproape avem un răspuns...",
+                "Se analizează informațiile colegiului...",
+                "Se pregătește răspunsul solicitat..."
+            ]
+        },
+        ar: {
+            title: "مرشد الذكاء الاصطناعي - COEES",
+            desc: "استفسر عن أي سؤال أو معلومات محدثة حول الكلية الرسمية للمربين الاجتماعيين في مجتمع فالنسيا.",
+            welcome: "مرحبًا! أنا المرشد الافتراضي للكلية الرسمية للمربين الاجتماعيين في مجتمع فالنسيا. كيف يمكنني مساعدتك؟",
+            placeholder: "اكتب استفسارك...",
+            sendBtn: "إرسال",
+            dir: "rtl",
+            waitingMsgs: [
+                "انتظر من فضلك، المرشد يراجع الوثائق...",
+                "اقتربنا من الحصول على الإجابة...",
+                "جاري تحليل معلومات الكلية...",
+                "جاري إعداد الإجابة المطلوبة..."
+            ]
+        },
+        ber: {
+            title: "Amsissi n Tussna Tanagant - COEES",
+            desc: "Sesten ɣef yal asteqsi neɣ talɣut tatrart ɣef Usensu Aẓerfan n Yimsiggezen Inaẓuren n Temnaḍt Valenciana.",
+            welcome: "Azul! Nek d amsissi awurman n Usensu Aẓerfan n Yimsiggezen Inaẓuren n Temnaḍt Valenciana. Amek i zemreɣ ad k-alleɣ?",
+            placeholder: "Aru asteqsi-inek...",
+            sendBtn: "Azen",
+            dir: "ltr",
+            waitingMsgs: [
+                "Rğu, amsissi itteddu ad iwali isemliyen...",
+                "Qrib ad naweḍ ɣer tiririt...",
+                "Asefsi n telɣut n usensu...",
+                "Aheyyi n tiririt i tterbeḍ..."
+            ]
+        },
+        uk: {
+            title: "Інформатор штучного інтелекту - COEES",
+            desc: "Задайте будь-яке питання або отримайте актуальну інформацію про Офіційну колегію соціальних педагогів Валенсійської спільноти.",
+            welcome: "Вітаю! Я віртуальний інформатор Офіційної колегії соціальних педагогів Валенсійської спільноти. Чим можу допомогти?",
+            placeholder: "Напишіть своє запитання...",
+            sendBtn: "Надіслати",
+            dir: "ltr",
+            waitingMsgs: [
+                "Зачекайте, інформатор опрацьовує документацію...",
+                "Майже є відповідь...",
+                "Аналіз інформації колегії...",
+                "Готується відповідь на ваше запитання..."
+            ]
+        },
+        ru: {
+            title: "Информатор искусственного интеллекта - COEES",
+            desc: "Задайте любой вопрос или получите актуальную информацию об Официальной коллегии социальных педагогов Валенсийского сообщества.",
+            welcome: "Здравствуйте! Я виртуальный информатор Официальной коллегии социальных педагогов Валенсийского сообщества. Чем могу помочь?",
+            placeholder: "Напишите ваш запрос...",
+            sendBtn: "Отправить",
+            dir: "ltr",
+            waitingMsgs: [
+                "Подождите, информатор изучает документацию...",
+                "Ответ почти готов...",
+                "Анализ информации коллегии...",
+                "Готовится запрошенный ответ..."
+            ]
+        },
+        zh: {
+            title: "人工智能信息员 - COEES",
+            desc: "咨询关于巴伦西亚社区社会教育工作者官方学院的任何疑问或最新信息。",
+            welcome: "你好！我是巴伦西亚社区社会教育工作者官方学院的虚拟信息员。有什么可以帮您的？",
+            placeholder: "输入您的疑问...",
+            sendBtn: "发送",
+            dir: "ltr",
+            waitingMsgs: [
+                "请稍候，信息员正在查阅文档...",
+                "答案马上就好...",
+                "正在分析学院信息...",
+                "正在准备您请求的回答..."
+            ]
+        }
+    };
+
+    // ─── DETECTAR LLENGUA DE LA URL AL CARREGAR ─────────────────────────
+    function detectarLangURL() {
+        const params = new URLSearchParams(window.location.search);
+        const lang = params.get('lang');
+        if (lang && translations[lang]) {
+            changeLang(lang, null);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.getAttribute('onclick').includes(`'${lang}'`)) {
+                    btn.classList.add('active');
+                }
+            });
+        } else {
+            changeLang('ca', null);
+            document.querySelectorAll('.lang-btn')[0].classList.add('active');
+        }
+    }
+
+    function changeLang(lang, event) {
+        currentLang = lang;
+        const data = translations[lang];
+
+        document.getElementById('header-title').innerText = data.title;
+        document.getElementById('header-desc').innerText = data.desc;
+        document.getElementById('welcome-msg').innerText = data.welcome;
+        document.getElementById('userInput').placeholder = data.placeholder;
+        document.getElementById('sendBtn').innerText = data.sendBtn;
+
+        document.getElementById('chat-container').style.direction = data.dir;
+        document.getElementById('userInput').style.direction = data.dir;
+
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+
+        if (reconeixementVeu) {
+            const langMap = {
+                ca: 'ca-ES', es: 'es-ES', en: 'en-US', fr: 'fr-FR',
+                pt: 'pt-PT', it: 'it-IT', ro: 'ro-RO', ar: 'ar-SA',
+                uk: 'uk-UA', ru: 'ru-RU', zh: 'zh-CN'
+            };
+            reconeixementVeu.lang = langMap[lang] || 'ca-ES';
+        }
+    }
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        reconeixementVeu = new SpeechRecognition();
+        reconeixementVeu.continuous = false;
+        reconeixementVeu.interimResults = false;
+        reconeixementVeu.lang = 'ca-ES';
+
+        reconeixementVeu.onresult = (event) => {
+            const transcripcio = event.results[0][0].transcript;
+            document.getElementById('userInput').value = transcripcio;
+            aturarGravacio();
+        };
+
+        reconeixementVeu.onerror = () => { aturarGravacio(); };
+        reconeixementVeu.onend = () => { aturarGravacio(); };
+    } else {
+        document.getElementById('micBtn').style.display = 'none';
+    }
+
+    function alternarMicrofon() {
+        if (estatProcessant) return;
+        if (gravant) {
+            reconeixementVeu.stop();
+            aturarGravacio();
+        } else {
+            try {
+                reconeixementVeu.start();
+                gravant = true;
+                const micBtn = document.getElementById('micBtn');
+                micBtn.classList.add('recording');
+                micBtn.innerText = '🛑';
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
+
+    function aturarGravacio() {
+        gravant = false;
+        const micBtn = document.getElementById('micBtn');
+        micBtn.classList.remove('recording');
+        micBtn.innerText = '🎤';
+    }
+
+    function bloquejarEntrada(bloquejar) {
+        estatProcessant = bloquejar;
+        document.getElementById('userInput').disabled = bloquejar;
+        document.getElementById('sendBtn').disabled = bloquejar;
+        document.getElementById('micBtn').disabled = bloquejar;
+    }
+
+    async function enviarMissatge() {
+        if (estatProcessant) return;
+
+        const input = document.getElementById('userInput');
+        const missatge = input.value.trim();
+        if (!missatge) return;
+
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.innerHTML += `<div class="message user">${missatge}</div>`;
+        input.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        bloquejarEntrada(true);
+
+        const currentWaitingMsgs = translations[currentLang].waitingMsgs;
+        const loadingId = 'loading-' + Date.now();
+        let indexMissatge = 0;
+
+        chatMessages.innerHTML += `<div id="${loadingId}" class="message bot loading">${currentWaitingMsgs[0]}</div>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        intervalRotacio = setInterval(() => {
+            indexMissatge = (indexMissatge + 1) % currentWaitingMsgs.length;
+            const loadingElem = document.getElementById(loadingId);
+            if (loadingElem) {
+                loadingElem.innerText = currentWaitingMsgs[indexMissatge];
+            }
+        }, 2500);
+
+        try {
+            // ─── ENVIAR TAMBÉ LA LLENGUA AL WORKER ──────────────────────
+            const response = await fetch(WORKER_URL, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pregunta: missatge, lang: currentLang })
+            });
+            const data = await response.json();
+            const respostaBot = data.resposta || data.reply || "No s'ha obtingut cap resposta del sistema.";
+
+            clearInterval(intervalRotacio);
+            document.getElementById(loadingId).remove();
+            chatMessages.innerHTML += `<div class="message bot">${respostaBot}</div>`;
+        } catch (err) {
+            clearInterval(intervalRotacio);
+            document.getElementById(loadingId).remove();
+            chatMessages.innerHTML += `<div class="message bot" style="color:var(--primary-color);">Error de connexió.</div>`;
+        }
+
+        bloquejarEntrada(false);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        document.getElementById('userInput').focus();
+    }
+
+    // ─── INICIALITZAR AL CARREGAR LA PÀGINA ─────────────────────────────
+    window.onload = detectarLangURL;
+</script>
+
+</body>
+</html>
