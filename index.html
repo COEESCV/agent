@@ -20,15 +20,19 @@
             --card-bg: #ffffff;
             --text-color: #212529;
             --border-color: #e9ecef;
+            /* Mida de lletra ajustable */
+            --app-font-size: 14px;
+            --header-title-size: 22px;
+            --header-desc-size: 14px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 100%; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: var(--text-color);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            /* Imagen de fondo de la organización, con velo blanco para legibilidad */
             background:
                 linear-gradient(rgba(248, 249, 250, 0.92), rgba(248, 249, 250, 0.92)),
                 url("imagen_fondo.jpg") repeat;
@@ -39,8 +43,17 @@
             padding: 10px 20px;
             display: flex;
             justify-content: center;
+            align-items: center;
             flex-wrap: wrap;
             gap: 8px;
+        }
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-inline-end: 8px;
+            margin-inline-end: 4px;
+            border-inline-end: 1px solid var(--border-color);
         }
         .lang-btn {
             background-color: transparent;
@@ -77,13 +90,13 @@
         }
         .header-title {
             color: var(--primary-color);
-            font-size: 22px;
+            font-size: var(--header-title-size);
             font-weight: bold;
             margin-bottom: 12px;
         }
         .header-desc {
             color: #555;
-            font-size: 14px;
+            font-size: var(--header-desc-size);
             margin-bottom: 25px;
             line-height: 1.5;
         }
@@ -110,7 +123,8 @@
             border-radius: 8px;
             max-width: 80%;
             line-height: 1.4;
-            font-size: 14px;
+            font-size: var(--app-font-size);
+            overflow-wrap: anywhere;
         }
         .message.user {
             background: var(--primary-color);
@@ -131,6 +145,18 @@
             align-self: flex-start;
             transition: all 0.3s ease;
         }
+        .msg-actions { margin-top: 8px; display: flex; gap: 8px; }
+        .btn-listen {
+            font: inherit;
+            font-size: calc(var(--app-font-size) * 0.9);
+            cursor: pointer;
+            border: 1px solid var(--primary-color);
+            border-radius: 999px;
+            background: #fff4ec;
+            color: var(--primary-color);
+            padding: 3px 10px;
+        }
+        .btn-listen:hover { background: #ffe6d5; }
         .chat-input-area {
             display: flex;
             padding: 10px;
@@ -145,7 +171,7 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             outline: none;
-            font-size: 14px;
+            font-size: var(--app-font-size);
         }
         .chat-input-area input:focus {
             border-color: var(--primary-color);
@@ -167,24 +193,12 @@
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
-            font-size: 14px;
+            font-size: var(--app-font-size);
         }
-        .btn-action:hover:not(:disabled) {
-            background: var(--primary-hover);
-        }
-        .btn-action:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        .btn-mic.recording {
-            background: #d9534f;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+        .btn-action:hover:not(:disabled) { background: var(--primary-hover); }
+        .btn-action:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-mic.recording { background: #d9534f; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         footer {
             background-color: #ffffff;
             border-top: 1px solid var(--border-color);
@@ -202,37 +216,39 @@
             box-shadow: 0 4px 14px rgba(0,0,0,0.25); cursor: pointer;
         }
         .btn-install:hover { background: var(--primary-hover); }
-        .modal-fons {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000;
-            display: none; align-items: center; justify-content: center;
-        }
-        .modal-caixa {
-            background: #fff; border-radius: 12px; padding: 22px;
-            max-width: 340px; width: 90%; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-        }
+        .modal-fons { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-caixa { background: #fff; border-radius: 12px; padding: 22px; max-width: 340px; width: 90%; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
         .modal-caixa h3 { color: var(--primary-color); margin-bottom: 10px; font-size: 17px; }
         .modal-caixa p { font-size: 14px; line-height: 1.5; margin-bottom: 10px; }
-        .modal-tancar {
-            background: var(--primary-color); color: #fff; border: none;
-            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;
+        .modal-tancar { background: var(--primary-color); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        @media (max-width: 640px) {
+            .font-controls { width: 100%; justify-content: center; border-inline-end: 0; padding-inline-end: 0; margin-inline-end: 0; }
+            .message { max-width: 92%; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
     <div class="lang-bar">
-        <button class="lang-btn" onclick="changeLang('ca', event)">valencià/català</button>
-        <button class="lang-btn" onclick="changeLang('es', event)">castellano</button>
-        <button class="lang-btn" onclick="changeLang('en', event)">english</button>
-        <button class="lang-btn" onclick="changeLang('fr', event)">francés</button>
-        <button class="lang-btn" onclick="changeLang('pt', event)">português</button>
-        <button class="lang-btn" onclick="changeLang('it', event)">italiano</button>
-        <button class="lang-btn" onclick="changeLang('ro', event)">română</button>
-        <button class="lang-btn" onclick="changeLang('ar', event)">العربية</button>
-        <button class="lang-btn" onclick="changeLang('ber', event)">tamazight</button>
-        <button class="lang-btn" onclick="changeLang('uk', event)">українська</button>
-        <button class="lang-btn" onclick="changeLang('ru', event)">русский</button>
-        <button class="lang-btn" onclick="changeLang('zh', event)">中文</button>
+        <div class="font-controls" role="group" aria-label="Mida de lletra">
+            <button id="fontLess" class="lang-btn" onclick="canviaFont(-1)" title="Reduir la lletra">A−</button>
+            <button id="fontReset" class="lang-btn" onclick="canviaFont(0)" title="Mida de lletra normal">A</button>
+            <button id="fontMore" class="lang-btn" onclick="canviaFont(1)" title="Augmentar la mida de la lletra">A+</button>
+        </div>
+        <button class="lang-btn" data-lang="ca" onclick="changeLang('ca', event)">valencià/català</button>
+        <button class="lang-btn" data-lang="es" onclick="changeLang('es', event)">castellano</button>
+        <button class="lang-btn" data-lang="de" onclick="changeLang('de', event)">deutsch</button>
+        <button class="lang-btn" data-lang="en" onclick="changeLang('en', event)">english</button>
+        <button class="lang-btn" data-lang="fr" onclick="changeLang('fr', event)">francés</button>
+        <button class="lang-btn" data-lang="pt" onclick="changeLang('pt', event)">português</button>
+        <button class="lang-btn" data-lang="it" onclick="changeLang('it', event)">italiano</button>
+        <button class="lang-btn" data-lang="ro" onclick="changeLang('ro', event)">română</button>
+        <button class="lang-btn" data-lang="ar" onclick="changeLang('ar', event)">العربية</button>
+        <button class="lang-btn" data-lang="ber" onclick="changeLang('ber', event)">tamazight</button>
+        <button class="lang-btn" data-lang="uk" onclick="changeLang('uk', event)">українська</button>
+        <button class="lang-btn" data-lang="ru" onclick="changeLang('ru', event)">русский</button>
+        <button class="lang-btn" data-lang="zh" onclick="changeLang('zh', event)">中文</button>
     </div>
 
     <div class="container">
@@ -241,7 +257,7 @@
         <div id="header-desc" class="header-desc">Consulta qualsevol dubte o informació actualitzada sobre el Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana.</div>
 
         <div id="chat-container" style="direction: ltr;">
-            <div id="chat-messages">
+            <div id="chat-messages" aria-live="polite">
                 <div id="welcome-msg" class="message bot">Hola! Sóc l'informador virtual del Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana. En què et puc ajudar?</div>
             </div>
             <div class="chat-input-area">
@@ -269,7 +285,6 @@
 
 <script>
     // ─── URL DEL WORKER DE CLOUDFLARE (AGENTE IA) ──────────────────────
-    // ⚠️ SUSTITUIR por la URL real de tu Worker una vez desplegado.
     const WORKER_URL = "https://coeescv.insightethos.workers.dev";
 
     let currentLang = 'ca';
@@ -278,192 +293,280 @@
     let gravant = false;
     let intervalRotacio = null;
 
+    const FONT_PERCENTATGES = [90, 100, 112, 125, 140];
+    let nivellFont = parseInt(localStorage.getItem('coeescv-font') || '1', 10);
+    if (isNaN(nivellFont)) nivellFont = 1;
+
     const translations = {
-        ca: {
-            title: "Informador d'Intel·ligència Artificial - COEESCV",
-            desc: "Consulta qualsevol dubte o informació actualitzada sobre el Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana.",
-            welcome: "Hola! Sóc l'informador virtual del Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana. En què et puc ajudar?",
-            placeholder: "Escriu la teua consulta...",
-            sendBtn: "Enviar",
-            dir: "ltr",
-            waitingMsgs: [
-                "Espereu, l'informador està consultant la documentació...",
-                "Ja quasi tenim una resposta...",
-                "Analitzant la informació del col·legi...",
-                "S'està preparant la resposta sol·licitada..."
-            ]
+        "ca": {
+                "title": "Informador d'Intel·ligència Artificial - COEESCV",
+                "desc": "Consulta qualsevol dubte o informació actualitzada sobre el Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana.",
+                "welcome": "Hola! Sóc l'informador virtual del Col·legi Oficial d'Educadores i Educadors Socials de la Comunitat Valenciana. En què et puc ajudar?",
+                "placeholder": "Escriu la teua consulta...",
+                "sendBtn": "Enviar",
+                "dir": "ltr",
+                "fontLess": "Reduir la lletra",
+                "fontReset": "Lletra normal",
+                "fontMore": "Augmentar la lletra",
+                "listen": "Escolta",
+                "stop": "Atura",
+                "waitingMsgs": [
+                        "Espereu, l'informador està consultant la documentació...",
+                        "Ja quasi tenim una resposta...",
+                        "Analitzant la informació del col·legi...",
+                        "S'està preparant la resposta sol·licitada..."
+                ]
         },
-        es: {
-            title: "Informador de Inteligencia Artificial - COEESCV",
-            desc: "Consulta cualquier duda o información actualizada sobre el Colegio Profesional de Educadoras y Educadores Sociales de la Comunidad Valenciana.",
-            welcome: "¡Hola! Soy el informador virtual del Colegio Profesional de Educadoras y Educadores Sociales de la Comunidad Valenciana. ¿En qué puedo ayudarte?",
-            placeholder: "Escribe tu consulta...",
-            sendBtn: "Enviar",
-            dir: "ltr",
-            waitingMsgs: [
-                "Espere, el informador está consultando la documentación...",
-                "Ya casi tenemos una respuesta...",
-                "Analizando la información del colegio...",
-                "Se está preparando la respuesta solicitada..."
-            ]
+        "es": {
+                "title": "Informador de Inteligencia Artificial - COEESCV",
+                "desc": "Consulta cualquier duda o información actualizada sobre el Colegio Profesional de Educadoras y Educadores Sociales de la Comunidad Valenciana.",
+                "welcome": "¡Hola! Soy el informador virtual del Colegio Profesional de Educadoras y Educadores Sociales de la Comunidad Valenciana. ¿En qué puedo ayudarte?",
+                "placeholder": "Escribe tu consulta...",
+                "sendBtn": "Enviar",
+                "dir": "ltr",
+                "fontLess": "Reducir la letra",
+                "fontReset": "Letra normal",
+                "fontMore": "Ampliar la letra",
+                "listen": "Escuchar",
+                "stop": "Parar",
+                "waitingMsgs": [
+                        "Espere, el informador está consultando la documentación...",
+                        "Ya casi tenemos una respuesta...",
+                        "Analizando la información del colegio...",
+                        "Se está preparando la respuesta solicitada..."
+                ]
         },
-        en: {
-            title: "Artificial Intelligence Informer - COEESCV",
-            desc: "Ask any question or get updated information about the Official College of Social Educators of the Valencian Community.",
-            welcome: "Hello! I am the virtual informer of the Official College of Social Educators of the Valencian Community. How can I help you?",
-            placeholder: "Type your query...",
-            sendBtn: "Send",
-            dir: "ltr",
-            waitingMsgs: [
-                "Please wait, the informer is checking the documentation...",
-                "We almost have an answer...",
-                "Analyzing college information...",
-                "Preparing the requested answer..."
-            ]
+        "de": {
+                "title": "Künstliche-Intelligenz-Informator - COEESCV",
+                "desc": "Stellen Sie Fragen oder erhalten Sie aktuelle Informationen über das Offizielle Kollegium der Sozialpädagogen der Valencianischen Gemeinschaft.",
+                "welcome": "Hallo! Ich bin der virtuelle Informator des Offiziellen Kollegiums der Sozialpädagogen der Valencianischen Gemeinschaft. Wie kann ich Ihnen helfen?",
+                "placeholder": "Geben Sie Ihre Frage ein...",
+                "sendBtn": "Senden",
+                "dir": "ltr",
+                "fontLess": "Schrift verkleinern",
+                "fontReset": "Normale Schrift",
+                "fontMore": "Schrift vergrößern",
+                "listen": "Anhören",
+                "stop": "Stopp",
+                "waitingMsgs": [
+                        "Bitte warten, der Informator prüft die Dokumentation...",
+                        "Die Antwort ist gleich fertig...",
+                        "Informationen des Kollegiums werden analysiert...",
+                        "Die angeforderte Antwort wird vorbereitet..."
+                ]
         },
-        fr: {
-            title: "Informateur d'Intelligence Artificielle - COEESCV",
-            desc: "Posez toutes vos questions ou obtenez des informations mises à jour sur le Collège Officiel des Éducateurs Sociaux de la Communauté valencienne.",
-            welcome: "Bonjour ! Je suis l'informateur virtuel du Collège Officiel des Éducateurs Sociaux de la Communauté valencienne. Comment puis-je vous aider ?",
-            placeholder: "Écrivez votre question...",
-            sendBtn: "Envoyer",
-            dir: "ltr",
-            waitingMsgs: [
-                "Veuillez patienter, l'informateur consulte la documentation...",
-                "Nous avons presque une réponse...",
-                "Analyse des informations du collège...",
-                "Préparation de la réponse demandée..."
-            ]
+        "en": {
+                "title": "Artificial Intelligence Informer - COEESCV",
+                "desc": "Ask any question or get updated information about the Official College of Social Educators of the Valencian Community.",
+                "welcome": "Hello! I am the virtual informer of the Official College of Social Educators of the Valencian Community. How can I help you?",
+                "placeholder": "Type your query...",
+                "sendBtn": "Send",
+                "dir": "ltr",
+                "fontLess": "Smaller text",
+                "fontReset": "Normal text",
+                "fontMore": "Larger text",
+                "listen": "Listen",
+                "stop": "Stop",
+                "waitingMsgs": [
+                        "Please wait, the informer is checking the documentation...",
+                        "We almost have an answer...",
+                        "Analyzing college information...",
+                        "Preparing the requested answer..."
+                ]
         },
-        pt: {
-            title: "Informador de Inteligência Artificial - COEESCV",
-            desc: "Consulte qualquer dúvida ou informação atualizada sobre o Colégio Oficial de Educadores Sociais da Comunidade Valenciana.",
-            welcome: "Olá! Sou o informador virtual do Colégio Oficial de Educadores Sociais da Comunidade Valenciana. Em que posso ajudar?",
-            placeholder: "Escreva a sua consulta...",
-            sendBtn: "Enviar",
-            dir: "ltr",
-            waitingMsgs: [
-                "Aguarde, o informador está a consultar a documentação...",
-                "Já quase temos uma resposta...",
-                "A analisar a informação do colégio...",
-                "A preparar a resposta solicitada..."
-            ]
+        "fr": {
+                "title": "Informateur d'Intelligence Artificielle - COEESCV",
+                "desc": "Posez toutes vos questions ou obtenez des informations mises à jour sur le Collège Officiel des Éducateurs Sociaux de la Communauté valencienne.",
+                "welcome": "Bonjour ! Je suis l'informateur virtuel du Collège Officiel des Éducateurs Sociaux de la Communauté valencienne. Comment puis-je vous aider ?",
+                "placeholder": "Écrivez votre question...",
+                "sendBtn": "Envoyer",
+                "dir": "ltr",
+                "fontLess": "Réduire le texte",
+                "fontReset": "Texte normal",
+                "fontMore": "Agrandir le texte",
+                "listen": "Écouter",
+                "stop": "Arrêter",
+                "waitingMsgs": [
+                        "Veuillez patienter, l'informateur consulte la documentation...",
+                        "Nous avons presque une réponse...",
+                        "Analyse des informations du collège...",
+                        "Préparation de la réponse demandée..."
+                ]
         },
-        it: {
-            title: "Informatore di Intelligenza Artificiale - COEESCV",
-            desc: "Consulta qualsiasi dubbio o informazione aggiornata sul Collegio Ufficiale degli Educatori Sociali della Comunità Valenciana.",
-            welcome: "Ciao! Sono l'informatore virtuale del Collegio Ufficiale degli Educatori Sociali della Comunità Valenciana. Come posso aiutarti?",
-            placeholder: "Scrivi la tua richiesta...",
-            sendBtn: "Invia",
-            dir: "ltr",
-            waitingMsgs: [
-                "Attendi, l'informatore sta consultando la documentazione...",
-                "Abbiamo quasi una risposta...",
-                "Analisi delle informazioni del collegio...",
-                "Preparazione della risposta richiesta..."
-            ]
+        "pt": {
+                "title": "Informador de Inteligência Artificial - COEESCV",
+                "desc": "Consulte qualquer dúvida ou informação atualizada sobre o Colégio Oficial de Educadores Sociais da Comunidade Valenciana.",
+                "welcome": "Olá! Sou o informador virtual do Colégio Oficial de Educadores Sociais da Comunidade Valenciana. Em que posso ajudar?",
+                "placeholder": "Escreva a sua consulta...",
+                "sendBtn": "Enviar",
+                "dir": "ltr",
+                "fontLess": "Reduzir o texto",
+                "fontReset": "Texto normal",
+                "fontMore": "Ampliar o texto",
+                "listen": "Ouvir",
+                "stop": "Parar",
+                "waitingMsgs": [
+                        "Aguarde, o informador está a consultar a documentação...",
+                        "Já quase temos uma resposta...",
+                        "A analisar a informação do colégio...",
+                        "A preparar a resposta solicitada..."
+                ]
         },
-        ro: {
-            title: "Informator de Inteligență Artificială - COEESCV",
-            desc: "Consultați orice întrebare sau informație actualizată despre Colegiul Oficial al Educatorilor Sociali din Comunitatea Valenciană.",
-            welcome: "Bună! Sunt informatorul virtual al Colegiului Oficial al Educatorilor Sociali din Comunitatea Valenciană. Cu ce vă pot ajuta?",
-            placeholder: "Scrieți întrebarea...",
-            sendBtn: "Trimite",
-            dir: "ltr",
-            waitingMsgs: [
-                "Așteptați, informatorul consultă documentația...",
-                "Aproape avem un răspuns...",
-                "Se analizează informațiile colegiului...",
-                "Se pregătește răspunsul solicitat..."
-            ]
+        "it": {
+                "title": "Informatore di Intelligenza Artificiale - COEESCV",
+                "desc": "Consulta qualsiasi dubbio o informazione aggiornata sul Collegio Ufficiale degli Educatori Sociali della Comunità Valenciana.",
+                "welcome": "Ciao! Sono l'informatore virtuale del Collegio Ufficiale degli Educatori Sociali della Comunità Valenciana. Come posso aiutarti?",
+                "placeholder": "Scrivi la tua richiesta...",
+                "sendBtn": "Invia",
+                "dir": "ltr",
+                "fontLess": "Riduci il testo",
+                "fontReset": "Testo normale",
+                "fontMore": "Ingrandisci il testo",
+                "listen": "Ascolta",
+                "stop": "Ferma",
+                "waitingMsgs": [
+                        "Attendi, l'informatore sta consultando la documentazione...",
+                        "Abbiamo quasi una risposta...",
+                        "Analisi delle informazioni del collegio...",
+                        "Preparazione della risposta richiesta..."
+                ]
         },
-        ar: {
-            title: "مرشد الذكاء الاصطناعي - COEESCV",
-            desc: "استفسر عن أي سؤال أو معلومات محدثة حول الكلية الرسمية للمربين الاجتماعيين في مجتمع فالنسيا.",
-            welcome: "مرحبًا! أنا المرشد الافتراضي للكلية الرسمية للمربين الاجتماعيين في مجتمع فالنسيا. كيف يمكنني مساعدتك؟",
-            placeholder: "اكتب استفسارك...",
-            sendBtn: "إرسال",
-            dir: "rtl",
-            waitingMsgs: [
-                "انتظر من فضلك، المرشد يراجع الوثائق...",
-                "اقتربنا من الحصول على الإجابة...",
-                "جاري تحليل معلومات الكلية...",
-                "جاري إعداد الإجابة المطلوبة..."
-            ]
+        "ro": {
+                "title": "Informator de Inteligență Artificială - COEESCV",
+                "desc": "Consultați orice întrebare sau informație actualizată despre Colegiul Oficial al Educatorilor Sociali din Comunitatea Valenciană.",
+                "welcome": "Bună! Sunt informatorul virtual al Colegiului Oficial al Educatorilor Sociali din Comunitatea Valenciană. Cu ce vă pot ajuta?",
+                "placeholder": "Scrieți întrebarea...",
+                "sendBtn": "Trimite",
+                "dir": "ltr",
+                "fontLess": "Micșorează textul",
+                "fontReset": "Text normal",
+                "fontMore": "Mărește textul",
+                "listen": "Ascultă",
+                "stop": "Oprește",
+                "waitingMsgs": [
+                        "Așteptați, informatorul consultă documentația...",
+                        "Aproape avem un răspuns...",
+                        "Se analizează informațiile colegiului...",
+                        "Se pregătește răspunsul solicitat..."
+                ]
         },
-        ber: {
-            title: "Amsissi n Tussna Tanagant - COEESCV",
-            desc: "Sesten ɣef yal asteqsi neɣ talɣut tatrart ɣef Usensu Aẓerfan n Yimsiggezen Inaẓuren n Temnaḍt Valenciana.",
-            welcome: "Azul! Nek d amsissi awurman n Usensu Aẓerfan n Yimsiggezen Inaẓuren n Temnaḍt Valenciana. Amek i zemreɣ ad k-alleɣ?",
-            placeholder: "Aru asteqsi-inek...",
-            sendBtn: "Azen",
-            dir: "ltr",
-            waitingMsgs: [
-                "Rğu, amsissi itteddu ad iwali isemliyen...",
-                "Qrib ad naweḍ ɣer tiririt...",
-                "Asefsi n telɣut n usensu...",
-                "Aheyyi n tiririt i tterbeḍ..."
-            ]
+        "ar": {
+                "title": "مرشد الذكاء الاصطناعي - COEESCV",
+                "desc": "استفسر عن أي سؤال أو معلومات محدثة حول الكلية الرسمية للمربين الاجتماعيين في مجتمع فالنسيا.",
+                "welcome": "مرحبًا! أنا المرشد الافتراضي للكلية الرسمية للمربين الاجتماعيين في مجتمع فالنسيا. كيف يمكنني مساعدتك؟",
+                "placeholder": "اكتب استفسارك...",
+                "sendBtn": "إرسال",
+                "dir": "rtl",
+                "fontLess": "تصغير الخط",
+                "fontReset": "خط عادي",
+                "fontMore": "تكبير الخط",
+                "listen": "استمع",
+                "stop": "إيقاف",
+                "waitingMsgs": [
+                        "انتظر من فضلك، المرشد يراجع الوثائق...",
+                        "اقتربنا من الحصول على الإجابة...",
+                        "جاري تحليل معلومات الكلية...",
+                        "جاري إعداد الإجابة المطلوبة..."
+                ]
         },
-        uk: {
-            title: "Інформатор штучного інтелекту - COEESCV",
-            desc: "Задайте будь-яке питання або отримайте актуальну інформацію про Офіційну колегію соціальних педагогів Валенсійської спільноти.",
-            welcome: "Вітаю! Я віртуальний інформатор Офіційної колегії соціальних педагогів Валенсійської спільноти. Чим можу допомогти?",
-            placeholder: "Напишіть своє запитання...",
-            sendBtn: "Надіслати",
-            dir: "ltr",
-            waitingMsgs: [
-                "Зачекайте, інформатор опрацьовує документацію...",
-                "Майже є відповідь...",
-                "Аналіз інформації колегії...",
-                "Готується відповідь на ваше запитання..."
-            ]
+        "ber": {
+                "title": "Amsissi n Tussna Tanagant - COEESCV",
+                "desc": "Sesten ɣef yal asteqsi neɣ talɣut tatrart ɣef Usensu Aẓerfan n Yimsiggezen Inaẓuren n Temnaḍt Valenciana.",
+                "welcome": "Azul! Nek d amsissi awurman n Usensu Aẓerfan n Yimsiggezen Inaẓuren n Temnaḍt Valenciana. Amek i zemreɣ ad k-alleɣ?",
+                "placeholder": "Aru asteqsi-inek...",
+                "sendBtn": "Azen",
+                "dir": "ltr",
+                "fontLess": "Senneẓ asekkil",
+                "fontReset": "Asekkil amagnu",
+                "fontMore": "Ssemɣer asekkil",
+                "listen": "Sel",
+                "stop": "Seḥbes",
+                "waitingMsgs": [
+                        "Rğu, amsissi itteddu ad iwali isemliyen...",
+                        "Qrib ad naweḍ ɣer tiririt...",
+                        "Asefsi n telɣut n usensu...",
+                        "Aheyyi n tiririt i tterbeḍ..."
+                ]
         },
-        ru: {
-            title: "Информатор искусственного интеллекта - COEESCV",
-            desc: "Задайте любой вопрос или получите актуальную информацию об Официальной коллегии социальных педагогов Валенсийского сообщества.",
-            welcome: "Здравствуйте! Я виртуальный информатор Официальной коллегии социальных педагогов Валенсийского сообщества. Чем могу помочь?",
-            placeholder: "Напишите ваш запрос...",
-            sendBtn: "Отправить",
-            dir: "ltr",
-            waitingMsgs: [
-                "Подождите, информатор изучает документацию...",
-                "Ответ почти готов...",
-                "Анализ информации коллегии...",
-                "Готовится запрошенный ответ..."
-            ]
+        "uk": {
+                "title": "Інформатор штучного інтелекту - COEESCV",
+                "desc": "Задайте будь-яке питання або отримайте актуальну інформацію про Офіційну колегію соціальних педагогів Валенсійської спільноти.",
+                "welcome": "Вітаю! Я віртуальний інформатор Офіційної колегії соціальних педагогів Валенсійської спільноти. Чим можу допомогти?",
+                "placeholder": "Напишіть своє запитання...",
+                "sendBtn": "Надіслати",
+                "dir": "ltr",
+                "fontLess": "Зменшити шрифт",
+                "fontReset": "Звичайний шрифт",
+                "fontMore": "Збільшити шрифт",
+                "listen": "Слухати",
+                "stop": "Зупинити",
+                "waitingMsgs": [
+                        "Зачекайте, інформатор опрацьовує документацію...",
+                        "Майже є відповідь...",
+                        "Аналіз інформації колегії...",
+                        "Готується відповідь на ваше запитання..."
+                ]
         },
-        zh: {
-            title: "人工智能信息员 - COEESCV",
-            desc: "咨询关于巴伦西亚社区社会教育工作者官方学院的任何疑问或最新信息。",
-            welcome: "你好！我是巴伦西亚社区社会教育工作者官方学院的虚拟信息员。有什么可以帮您的？",
-            placeholder: "输入您的疑问...",
-            sendBtn: "发送",
-            dir: "ltr",
-            waitingMsgs: [
-                "请稍候，信息员正在查阅文档...",
-                "答案马上就好...",
-                "正在分析学院信息...",
-                "正在准备您请求的回答..."
-            ]
+        "ru": {
+                "title": "Информатор искусственного интеллекта - COEESCV",
+                "desc": "Задайте любой вопрос или получите актуальную информацию об Официальной коллегии социальных педагогов Валенсийского сообщества.",
+                "welcome": "Здравствуйте! Я виртуальный информатор Официальной коллегии социальных педагогов Валенсийского сообщества. Чем могу помочь?",
+                "placeholder": "Напишите ваш запрос...",
+                "sendBtn": "Отправить",
+                "dir": "ltr",
+                "fontLess": "Уменьшить шрифт",
+                "fontReset": "Обычный шрифт",
+                "fontMore": "Увеличить шрифт",
+                "listen": "Слушать",
+                "stop": "Стоп",
+                "waitingMsgs": [
+                        "Подождите, информатор изучает документацию...",
+                        "Ответ почти готов...",
+                        "Анализ информации коллегии...",
+                        "Готовится запрошенный ответ..."
+                ]
+        },
+        "zh": {
+                "title": "人工智能信息员 - COEESCV",
+                "desc": "咨询关于巴伦西亚社区社会教育工作者官方学院的任何疑问或最新信息。",
+                "welcome": "你好！我是巴伦西亚社区社会教育工作者官方学院的虚拟信息员。有什么可以帮您的？",
+                "placeholder": "输入您的疑问...",
+                "sendBtn": "发送",
+                "dir": "ltr",
+                "fontLess": "缩小字体",
+                "fontReset": "正常字体",
+                "fontMore": "放大字体",
+                "listen": "朗读",
+                "stop": "停止",
+                "waitingMsgs": [
+                        "请稍候，信息员正在查阅文档...",
+                        "答案马上就好...",
+                        "正在分析学院信息...",
+                        "正在准备您请求的回答..."
+                ]
         }
+};
+
+    const langMap = {
+        ca: 'ca-ES', es: 'es-ES', de: 'de-DE', en: 'en-US', fr: 'fr-FR',
+        pt: 'pt-PT', it: 'it-IT', ro: 'ro-RO', ar: 'ar-SA', ber: 'zgh',
+        uk: 'uk-UA', ru: 'ru-RU', zh: 'zh-CN'
+    };
+    const veuMap = {
+        ca: 'ca-ES', es: 'es-ES', de: 'de-DE', en: 'en-US', fr: 'fr-FR',
+        pt: 'pt-PT', it: 'it-IT', ro: 'ro-RO', ar: 'ar-SA', ber: 'zgh',
+        uk: 'uk-UA', ru: 'ru-RU', zh: 'zh-CN'
     };
 
-    // ─── DETECTAR LLENGUA DE LA URL AL CARREGAR ─────────────────────────
     function detectarLangURL() {
         const params = new URLSearchParams(window.location.search);
         const lang = params.get('lang');
         if (lang && translations[lang]) {
             changeLang(lang, null);
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.getAttribute('onclick').includes(`'${lang}'`)) {
-                    btn.classList.add('active');
-                }
-            });
         } else {
             changeLang('ca', null);
-            document.querySelectorAll('.lang-btn')[0].classList.add('active');
         }
+        aplicaFont();
     }
 
     function changeLang(lang, event) {
@@ -479,20 +582,90 @@
         document.getElementById('chat-container').style.direction = data.dir;
         document.getElementById('userInput').style.direction = data.dir;
 
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.lang-btn[data-lang]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
         if (typeof actualitzarInstallTexts === 'function') actualitzarInstallTexts();
-        if (event && event.target) {
-            event.target.classList.add('active');
-        }
+        actualitzarTextosFont();
 
         if (reconeixementVeu) {
-            const langMap = {
-                ca: 'ca-ES', es: 'es-ES', en: 'en-US', fr: 'fr-FR',
-                pt: 'pt-PT', it: 'it-IT', ro: 'ro-RO', ar: 'ar-SA',
-                uk: 'uk-UA', ru: 'ru-RU', zh: 'zh-CN'
-            };
             reconeixementVeu.lang = langMap[lang] || 'ca-ES';
         }
+    }
+
+    function actualitzarTextosFont() {
+        const d = translations[currentLang] || translations.ca;
+        document.getElementById('fontLess').title = d.fontLess;
+        document.getElementById('fontLess').setAttribute('aria-label', d.fontLess);
+        document.getElementById('fontReset').title = d.fontReset;
+        document.getElementById('fontReset').setAttribute('aria-label', d.fontReset);
+        document.getElementById('fontMore').title = d.fontMore;
+        document.getElementById('fontMore').setAttribute('aria-label', d.fontMore);
+    }
+
+    function aplicaFont() {
+        const index = Math.min(Math.max(nivellFont, 0), FONT_PERCENTATGES.length - 1);
+        const pct = FONT_PERCENTATGES[index];
+        const arrel = document.documentElement;
+        arrel.style.setProperty('--app-font-size', (14 * pct / 100) + 'px');
+        arrel.style.setProperty('--header-title-size', (22 * pct / 100) + 'px');
+        arrel.style.setProperty('--header-desc-size', (14 * pct / 100) + 'px');
+        localStorage.setItem('coeescv-font', String(nivellFont));
+        actualitzarTextosFont();
+    }
+
+    function canviaFont(pas) {
+        if (pas === 0) {
+            nivellFont = 1;
+        } else {
+            nivellFont = Math.min(Math.max(nivellFont + pas, 0), FONT_PERCENTATGES.length - 1);
+        }
+        aplicaFont();
+    }
+
+    function crearMissatge(tipus, text) {
+        const div = document.createElement('div');
+        div.className = 'message ' + tipus;
+        div.textContent = text;
+        return div;
+    }
+
+    function afegirBotoEscolta(div, text) {
+        if (!('speechSynthesis' in window)) return;
+        const accions = document.createElement('div');
+        accions.className = 'msg-actions';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-listen';
+        btn.textContent = '🔊 ' + (translations[currentLang].listen || 'Escolta');
+        btn.setAttribute('aria-label', translations[currentLang].listen || 'Escolta');
+        let parlant = false;
+        btn.addEventListener('click', () => {
+            const d = translations[currentLang] || translations.ca;
+            if (parlant) {
+                speechSynthesis.cancel();
+                return;
+            }
+            speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            const codi = veuMap[currentLang] || 'ca-ES';
+            u.lang = codi;
+            const pref = codi.slice(0, 2).toLowerCase();
+            const veu = speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith(pref));
+            if (veu) u.voice = veu;
+            u.onend = u.onerror = () => {
+                parlant = false;
+                btn.textContent = '🔊 ' + d.listen;
+                btn.setAttribute('aria-label', d.listen);
+            };
+            parlant = true;
+            btn.textContent = '⏹ ' + d.stop;
+            btn.setAttribute('aria-label', d.stop);
+            speechSynthesis.speak(u);
+        });
+        accions.appendChild(btn);
+        div.appendChild(accions);
     }
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -553,31 +726,29 @@
         const missatge = input.value.trim();
         if (!missatge) return;
 
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+
         const chatMessages = document.getElementById('chat-messages');
-        chatMessages.innerHTML += `<div class="message user">${missatge}</div>`;
+        chatMessages.appendChild(crearMissatge('user', missatge));
         input.value = '';
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         bloquejarEntrada(true);
 
         const currentWaitingMsgs = translations[currentLang].waitingMsgs;
-        const loadingId = 'loading-' + Date.now();
-        let indexMissatge = 0;
-
-        chatMessages.innerHTML += `<div id="${loadingId}" class="message bot loading">${currentWaitingMsgs[0]}</div>`;
+        const loading = crearMissatge('bot loading', currentWaitingMsgs[0]);
+        loading.id = 'loading-' + Date.now();
+        chatMessages.appendChild(loading);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
+        let indexMissatge = 0;
         intervalRotacio = setInterval(() => {
             indexMissatge = (indexMissatge + 1) % currentWaitingMsgs.length;
-            const loadingElem = document.getElementById(loadingId);
-            if (loadingElem) {
-                loadingElem.innerText = currentWaitingMsgs[indexMissatge];
-            }
+            if (loading.isConnected) loading.innerText = currentWaitingMsgs[indexMissatge];
         }, 2500);
 
         try {
-            // ─── ENVIAR TAMBÉ LA LLENGUA AL WORKER ──────────────────────
-            const response = await fetch(WORKER_URL, { 
+            const response = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ pregunta: missatge, lang: currentLang })
@@ -586,12 +757,14 @@
             const respostaBot = data.resposta || data.reply || data.error || "No s'ha obtingut cap resposta del sistema.";
 
             clearInterval(intervalRotacio);
-            document.getElementById(loadingId).remove();
-            chatMessages.innerHTML += `<div class="message bot">${respostaBot}</div>`;
+            loading.remove();
+            const bot = crearMissatge('bot', respostaBot);
+            afegirBotoEscolta(bot, respostaBot);
+            chatMessages.appendChild(bot);
         } catch (err) {
             clearInterval(intervalRotacio);
-            document.getElementById(loadingId).remove();
-            chatMessages.innerHTML += `<div class="message bot" style="color:var(--primary-color);">Error de connexió.</div>`;
+            loading.remove();
+            chatMessages.appendChild(crearMissatge('bot', "Error de connexió."));
         }
 
         bloquejarEntrada(false);
@@ -616,55 +789,98 @@
     // ─── BOTÓN "INSTAL·LAR APP" (PWA) ─────────────────────────────────
     let deferredPrompt = null;
     const installTexts = {
-        ca: { btn: "Instal·lar app", title: "Instal·la l'app al teu mòbil",
-              ios: "iPhone/iPad (Safari): toca el botó Compartir i després «Añadir a pantalla de inicio».",
-              android: "Android (Chrome): toca el menú ⋮ i després «Instalar aplicación» o «Añadir a pantalla de inicio».",
-              close: "D'acord" },
-        es: { btn: "Instalar app", title: "Instala la app en tu móvil",
-              ios: "iPhone/iPad (Safari): toca el botón Compartir y después «Añadir a pantalla de inicio».",
-              android: "Android (Chrome): toca el menú ⋮ y después «Instalar aplicación» o «Añadir a pantalla de inicio».",
-              close: "De acuerdo" },
-        en: { btn: "Install app", title: "Install the app on your phone",
-              ios: "iPhone/iPad (Safari): tap the Share button, then \"Add to Home Screen\".",
-              android: "Android (Chrome): tap the ⋮ menu, then \"Install app\" or \"Add to Home screen\".",
-              close: "OK" },
-        fr: { btn: "Installer l'app", title: "Installez l'app sur votre mobile",
-              ios: "iPhone/iPad (Safari) : touchez le bouton Partager, puis « Ajouter à l'écran d'accueil ».",
-              android: "Android (Chrome) : touchez le menu ⋮, puis « Installer l'application ».",
-              close: "D'accord" },
-        pt: { btn: "Instalar app", title: "Instale a app no seu telemóvel",
-              ios: "iPhone/iPad (Safari): toque no botão Partilhar e depois \"Adicionar ao ecrã inicial\".",
-              android: "Android (Chrome): toque no menu ⋮ e depois \"Instalar aplicação\".",
-              close: "OK" },
-        it: { btn: "Installa app", title: "Installa l'app sul tuo telefono",
-              ios: "iPhone/iPad (Safari): tocca il pulsante Condividi, poi \"Aggiungi a Home\".",
-              android: "Android (Chrome): tocca il menu ⋮, poi \"Installa app\".",
-              close: "OK" },
-        ro: { btn: "Instalează aplicația", title: "Instalează aplicația pe telefon",
-              ios: "iPhone/iPad (Safari): atinge butonul Partajează, apoi \"Adaugă la ecranul de pornire\".",
-              android: "Android (Chrome): atinge meniul ⋮, apoi \"Instalează aplicația\".",
-              close: "OK" },
-        ar: { btn: "تثبيت التطبيق", title: "ثبّت التطبيق على هاتفك",
-              ios: "آيفون/آيباد (سفاري): اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية».",
-              android: "أندرويد (كروم): اضغط قائمة ⋮ ثم «تثبيت التطبيق».",
-              close: "حسناً" },
-        ber: { btn: "Sebded asnas", title: "Sebded asnas ɣer tilifun-inek",
-              ios: "iPhone/iPad (Safari): sit tiqeffalt Bḍu, sya \"Rnu ɣer ugdud n wudem\".",
-              android: "Android (Chrome): sit umuṛ ⋮, sya \"Sebded asnas\".",
-              close: "Ih" },
-        uk: { btn: "Встановити застосунок", title: "Встановіть застосунок на телефон",
-              ios: "iPhone/iPad (Safari): натисніть «Поділитися», потім «Додати на початковий екран».",
-              android: "Android (Chrome): натисніть меню ⋮, потім «Встановити застосунок».",
-              close: "Гаразд" },
-        ru: { btn: "Установить приложение", title: "Установите приложение на телефон",
-              ios: "iPhone/iPad (Safari): нажмите «Поделиться», затем «На экран Домой».",
-              android: "Android (Chrome): нажмите меню ⋮, затем «Установить приложение».",
-              close: "Хорошо" },
-        zh: { btn: "安装应用", title: "在手机上安装本应用",
-              ios: "iPhone/iPad（Safari）：点按“分享”按钮，然后选择“添加到主屏幕”。",
-              android: "安卓（Chrome）：点按 ⋮ 菜单，然后选择“安装应用”。",
-              close: "好的" }
-    };
+        "ca": {
+                "btn": "Instal·lar app",
+                "title": "Instal·la l'app al teu mòbil",
+                "ios": "iPhone/iPad (Safari): toca el botó Compartir i després «Añadir a pantalla de inicio».",
+                "android": "Android (Chrome): toca el menú ⋮ i després «Instalar aplicación» o «Añadir a pantalla de inicio».",
+                "close": "D'acord"
+        },
+        "es": {
+                "btn": "Instalar app",
+                "title": "Instala la app en tu móvil",
+                "ios": "iPhone/iPad (Safari): toca el botón Compartir y después «Añadir a pantalla de inicio».",
+                "android": "Android (Chrome): toca el menú ⋮ y después «Instalar aplicación» o «Añadir a pantalla de inicio».",
+                "close": "De acuerdo"
+        },
+        "de": {
+                "btn": "App installieren",
+                "title": "App auf dem Handy installieren",
+                "ios": "iPhone/iPad (Safari): Tippen Sie auf Teilen und dann «Zum Home-Bildschirm».",
+                "android": "Android (Chrome): Tippen Sie auf das Menü ⋮ und dann «App installieren».",
+                "close": "OK"
+        },
+        "en": {
+                "btn": "Install app",
+                "title": "Install the app on your phone",
+                "ios": "iPhone/iPad (Safari): tap the Share button, then \"Add to Home Screen\".",
+                "android": "Android (Chrome): tap the ⋮ menu, then \"Install app\" or \"Add to Home screen\".",
+                "close": "OK"
+        },
+        "fr": {
+                "btn": "Installer l'app",
+                "title": "Installez l'app sur votre mobile",
+                "ios": "iPhone/iPad (Safari) : touchez le bouton Partager, puis « Ajouter à l'écran d'accueil ».",
+                "android": "Android (Chrome) : touchez le menu ⋮, puis « Installer l'application ».",
+                "close": "D'accord"
+        },
+        "pt": {
+                "btn": "Instalar app",
+                "title": "Instale a app no seu telemóvel",
+                "ios": "iPhone/iPad (Safari): toque no botão Partilhar e depois \"Adicionar ao ecrã inicial\".",
+                "android": "Android (Chrome): toque no menu ⋮ e depois \"Instalar aplicação\".",
+                "close": "OK"
+        },
+        "it": {
+                "btn": "Installa app",
+                "title": "Installa l'app sul tuo telefono",
+                "ios": "iPhone/iPad (Safari): tocca il pulsante Condividi, poi \"Aggiungi a Home\".",
+                "android": "Android (Chrome): tocca il menu ⋮, poi \"Installa app\".",
+                "close": "OK"
+        },
+        "ro": {
+                "btn": "Instalează aplicația",
+                "title": "Instalează aplicația pe telefon",
+                "ios": "iPhone/iPad (Safari): atinge butonul Partajează, apoi \"Adaugă la ecranul de pornire\".",
+                "android": "Android (Chrome): atinge meniul ⋮, apoi \"Instalează aplicația\".",
+                "close": "OK"
+        },
+        "ar": {
+                "btn": "تثبيت التطبيق",
+                "title": "ثبّت التطبيق على هاتفك",
+                "ios": "آيفون/آيباد (سفاري): اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية».",
+                "android": "أندرويد (كروم): اضغط قائمة ⋮ ثم «تثبيت التطبيق».",
+                "close": "حسناً"
+        },
+        "ber": {
+                "btn": "Sebded asnas",
+                "title": "Sebded asnas ɣer tilifun-inek",
+                "ios": "iPhone/iPad (Safari): sit tiqeffalt Bḍu, sya \"Rnu ɣer ugdud n wudem\".",
+                "android": "Android (Chrome): sit umuṛ ⋮, sya \"Sebded asnas\".",
+                "close": "Ih"
+        },
+        "uk": {
+                "btn": "Встановити застосунок",
+                "title": "Встановіть застосунок на телефон",
+                "ios": "iPhone/iPad (Safari): натисніть «Поділитися», потім «Додати на початковий екран».",
+                "android": "Android (Chrome): натисніть меню ⋮, потім «Встановити застосунок».",
+                "close": "Гаразд"
+        },
+        "ru": {
+                "btn": "Установить приложение",
+                "title": "Установите приложение на телефон",
+                "ios": "iPhone/iPad (Safari): нажмите «Поделиться», затем «На экран Домой».",
+                "android": "Android (Chrome): нажмите меню ⋮, затем «Установить приложение».",
+                "close": "Хорошо"
+        },
+        "zh": {
+                "btn": "安装应用",
+                "title": "在手机上安装本应用",
+                "ios": "iPhone/iPad（Safari）：点按“分享”按钮，然后选择“添加到主屏幕”。",
+                "android": "安卓（Chrome）：点按 ⋮ 菜单，然后选择“安装应用”。",
+                "close": "好的"
+        }
+};
 
     function installLang() { return installTexts[currentLang] || installTexts.ca; }
 
@@ -690,7 +906,6 @@
             installBtn.style.display = 'flex';
         });
 
-        // En móviles mostramos el botón siempre (iOS no dispara beforeinstallprompt)
         if (isMobile && !isStandalone) {
             actualitzarInstallTexts();
             installBtn.style.display = 'flex';
