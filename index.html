@@ -287,6 +287,30 @@
     // ─── URL DEL WORKER DE CLOUDFLARE (AGENTE IA) ──────────────────────
     const WORKER_URL = "https://coeescv.insightethos.workers.dev";
 
+    // ─── SUPABASE: arxiu de preguntes/respostes ────────────────────────
+    // ⚠️ Pega ací la teua SUPABASE ANON KEY. No uses service_role en front-end.
+    const SUPABASE_URL = "https://amswkfdhwashotagrhfo.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_J-PhmX7Awpb8UwDYXhYwWg_iISrccBy"; // clau publicable; no usar sb_secret_ en front-end
+    const INFORMADOR_ENDPOINT = SUPABASE_URL + "/rest/v1/informador_educacio_social";
+
+    async function desaInformador(pregunta, resposta) {
+        if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.indexOf("PEGAR_") === 0) return;
+        try {
+            await fetch(INFORMADOR_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "apikey": SUPABASE_ANON_KEY,
+                    "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+                    "Content-Type": "application/json",
+                    "Prefer": "return=minimal"
+                },
+                body: JSON.stringify({ pregunta: pregunta, resposta: resposta, idioma: currentLang })
+            });
+        } catch (e) {
+            console.error("Supabase informador:", e);
+        }
+    }
+
     let currentLang = 'ca';
     let estatProcessant = false;
     let reconeixementVeu = null;
@@ -755,6 +779,7 @@
             });
             const data = await response.json();
             const respostaBot = data.resposta || data.reply || data.error || "No s'ha obtingut cap resposta del sistema.";
+            desaInformador(missatge, respostaBot);
 
             clearInterval(intervalRotacio);
             loading.remove();
@@ -764,7 +789,9 @@
         } catch (err) {
             clearInterval(intervalRotacio);
             loading.remove();
-            chatMessages.appendChild(crearMissatge('bot', "Error de connexió."));
+            const errText = "Error de connexió.";
+            chatMessages.appendChild(crearMissatge('bot', errText));
+            desaInformador(missatge, errText);
         }
 
         bloquejarEntrada(false);
